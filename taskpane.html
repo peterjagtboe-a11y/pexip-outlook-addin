@@ -225,13 +225,30 @@
                 return;
             }
             
-            Office.context.roamingSettings.set('vmrUsername', vmrUsername);
-            Office.context.roamingSettings.set('vmrDomain', vmrDomain);
-            Office.context.roamingSettings.saveAsync(function(result) {
-                if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    showMain();
-                }
-            });
+            // Disable button during save
+            var btn = document.getElementById('saveSettingsBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+            
+            try {
+                // Save to Office roaming settings
+                Office.context.roamingSettings.set('vmrUsername', vmrUsername);
+                Office.context.roamingSettings.set('vmrDomain', vmrDomain);
+                Office.context.roamingSettings.saveAsync(function(result) {
+                    btn.disabled = false;
+                    btn.textContent = 'Save Settings';
+                    
+                    if (result.status === Office.AsyncResultStatus.Succeeded) {
+                        showMain();
+                    } else {
+                        alert('Error saving settings: ' + (result.error ? result.error.message : 'Unknown error'));
+                    }
+                });
+            } catch (e) {
+                btn.disabled = false;
+                btn.textContent = 'Save Settings';
+                alert('Error: ' + e.message);
+            }
         }
         
         function showSettings() {
@@ -260,13 +277,13 @@
             return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PEXIP MEETING DETAILS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+ 
 Join from web browser:
 ${webLink}
-
+ 
 Join from VC endpoint:
 ${vcEndpoint}
-
+ 
 Join from Pexip App:
 ${appLink}`;
         }
