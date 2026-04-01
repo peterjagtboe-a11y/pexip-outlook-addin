@@ -269,8 +269,9 @@
             const vcEndpoint = vmrUsername + '@' + vmrDomain;
             const appLink = 'pexip://' + vmrUsername + '@' + vmrDomain;
             
-            return `
-            PEXIP MEETING DETAILS
+            return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PEXIP MEETING DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Join from web browser:
 ${webLink}
@@ -287,18 +288,26 @@ ${appLink}`;
             button.disabled = true;
             button.textContent = 'Inserting...';
             
-            const pexipDetails = '\n\n' + generatePexipText();
+            const webLink = 'https://' + vmrDomain + '/' + vmrUsername;
+            const vcEndpoint = vmrUsername + '@' + vmrDomain;
+            const appLink = 'pexip://' + vmrUsername + '@' + vmrDomain;
+            
+            // Create HTML formatted content
+            const pexipHTML = `<br><br><strong>PEXIP MEETING DETAILS</strong><br><br>` +
+                `<strong>Join from web browser:</strong> ${webLink}<br><br>` +
+                `<strong>Join from VC endpoint:</strong> ${vcEndpoint}<br><br>` +
+                `<strong>Join from Pexip App:</strong> ${appLink}<br>`;
             
             Office.context.mailbox.item.body.getAsync(
-                Office.CoercionType.Text,
+                Office.CoercionType.Html,
                 function(result) {
                     if (result.status === Office.AsyncResultStatus.Succeeded) {
                         let currentBody = result.value || '';
-                        let newBody = currentBody + pexipDetails;
+                        let newBody = currentBody + pexipHTML;
                         
                         Office.context.mailbox.item.body.setAsync(
                             newBody,
-                            { coercionType: Office.CoercionType.Text },
+                            { coercionType: Office.CoercionType.Html },
                             function(setResult) {
                                 if (setResult.status === Office.AsyncResultStatus.Succeeded) {
                                     document.getElementById('success').classList.add('show');
