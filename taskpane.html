@@ -202,18 +202,20 @@
         });
         
         function loadSettings() {
-            Office.context.roamingSettings.loadAsync(function(result) {
-                if (result.status === Office.AsyncResultStatus.Succeeded) {
-                    vmrUsername = Office.context.roamingSettings.get('vmrUsername') || '';
-                    vmrDomain = Office.context.roamingSettings.get('vmrDomain') || 'pexip.vc';
-                    
-                    if (vmrUsername) {
-                        showMain();
-                    } else {
-                        showSettings();
-                    }
+            // Use localStorage instead of Office roaming settings
+            try {
+                vmrUsername = localStorage.getItem('pexip_vmrUsername') || '';
+                vmrDomain = localStorage.getItem('pexip_vmrDomain') || 'pexip.vc';
+                
+                if (vmrUsername) {
+                    showMain();
+                } else {
+                    showSettings();
                 }
-            });
+            } catch (e) {
+                console.error('Error loading settings:', e);
+                showSettings();
+            }
         }
         
         function saveSettings() {
@@ -225,29 +227,22 @@
                 return;
             }
             
-            // Disable button during save
             var btn = document.getElementById('saveSettingsBtn');
             btn.disabled = true;
             btn.textContent = 'Saving...';
             
             try {
-                // Save to Office roaming settings
-                Office.context.roamingSettings.set('vmrUsername', vmrUsername);
-                Office.context.roamingSettings.set('vmrDomain', vmrDomain);
-                Office.context.roamingSettings.saveAsync(function(result) {
-                    btn.disabled = false;
-                    btn.textContent = 'Save Settings';
-                    
-                    if (result.status === Office.AsyncResultStatus.Succeeded) {
-                        showMain();
-                    } else {
-                        alert('Error saving settings: ' + (result.error ? result.error.message : 'Unknown error'));
-                    }
-                });
+                // Save to localStorage
+                localStorage.setItem('pexip_vmrUsername', vmrUsername);
+                localStorage.setItem('pexip_vmrDomain', vmrDomain);
+                
+                btn.disabled = false;
+                btn.textContent = 'Save Settings';
+                showMain();
             } catch (e) {
                 btn.disabled = false;
                 btn.textContent = 'Save Settings';
-                alert('Error: ' + e.message);
+                alert('Error saving: ' + e.message);
             }
         }
         
@@ -277,13 +272,13 @@
             return `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 PEXIP MEETING DETAILS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- 
+
 Join from web browser:
 ${webLink}
- 
+
 Join from VC endpoint:
 ${vcEndpoint}
- 
+
 Join from Pexip App:
 ${appLink}`;
         }
