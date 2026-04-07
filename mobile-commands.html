@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script>
+        // Mobile function for Pexip add-in
+        Office.initialize = function() {};
+
+        function insertPexipMeeting(event) {
+            // Hardcoded VMR details for Peter Jagtboe
+            var vmrUsername = 'peter.jagtboe';
+            var vmrDomain = 'pexip.vc';
+            
+            var webLink = 'https://' + vmrDomain + '/' + vmrUsername;
+            var vcEndpoint = vmrUsername + '@' + vmrDomain;
+            var appLink = 'pexip://' + vmrUsername + '@' + vmrDomain;
+            
+            // Create HTML formatted content
+            var pexipHTML = '<br><br><strong>PEXIP MEETING DETAILS</strong><br><br>' +
+                '<strong>Join from web browser:</strong> ' + webLink + '<br><br>' +
+                '<strong>Join from VC endpoint:</strong> ' + vcEndpoint + '<br><br>' +
+                '<strong>Join from Pexip App:</strong> ' + appLink + '<br>';
+            
+            // Insert into appointment body
+            Office.context.mailbox.item.body.getAsync(
+                Office.CoercionType.Html,
+                function(result) {
+                    if (result.status === Office.AsyncResultStatus.Succeeded) {
+                        var currentBody = result.value || '';
+                        var newBody = currentBody + pexipHTML;
+                        
+                        Office.context.mailbox.item.body.setAsync(
+                            newBody,
+                            { coercionType: Office.CoercionType.Html },
+                            function(setResult) {
+                                // Signal completion
+                                event.completed();
+                            }
+                        );
+                    } else {
+                        event.completed();
+                    }
+                }
+            );
+        }
+    </script>
+</head>
+<body>
+</body>
+</html>
