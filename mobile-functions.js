@@ -1,38 +1,35 @@
 // Mobile function file for Pexip add-in
 Office.initialize = function() {};
-
+ 
 function insertPexipMeeting(event) {
-    // Hardcoded VMR details for Peter Jagtboe
-    const vmrUsername = 'peter.jagtboe';
-    const vmrDomain = 'pexip.vc';
+    // Hardcoded VMR details
+    var vmrUsername = 'peter.jagtboe';
+    var vmrDomain = 'pexip.vc';
     
-    const webLink = 'https://' + vmrDomain + '/' + vmrUsername;
-    const vcEndpoint = vmrUsername + '@' + vmrDomain;
+    var webLink = 'https://' + vmrDomain + '/' + vmrUsername;
+    var vcEndpoint = vmrUsername + '@' + vmrDomain;
+    var appLink = 'pexip://' + vmrUsername + '@' + vmrDomain;
     
-    // Create HTML formatted content
-    const pexipHTML = '<br><br><strong>PEXIP MEETING DETAILS</strong><br><br>' +
-        '<strong>Join from web browser:</strong> ' + webLink + '<br><br>' +
-        '<strong>Join from VC endpoint:</strong> ' + vcEndpoint + '<br><br>' +
+    // Simple text format
+    var pexipText = '\n\nPEXIP MEETING DETAILS\n\n' +
+        'Join from web browser:\n' + webLink + '\n\n' +
+        'Join from VC endpoint:\n' + vcEndpoint + '\n\n' +
+        'Join from Pexip App:\n' + appLink + '\n';
     
-    // Insert into appointment body
-    Office.context.mailbox.item.body.getAsync(
-        Office.CoercionType.Html,
-        function(result) {
-            if (result.status === Office.AsyncResultStatus.Succeeded) {
-                const currentBody = result.value || '';
-                const newBody = currentBody + pexipHTML;
-                
-                Office.context.mailbox.item.body.setAsync(
-                    newBody,
-                    { coercionType: Office.CoercionType.Html },
-                    function(setResult) {
-                        // Signal completion
-                        event.completed();
-                    }
-                );
-            } else {
-                event.completed();
+    // Try to insert as plain text first
+    try {
+        Office.context.mailbox.item.body.setAsync(
+            pexipText,
+            { coercionType: Office.CoercionType.Text, asyncContext: { isAppend: true } },
+            function(result) {
+                if (event && event.completed) {
+                    event.completed();
+                }
             }
+        );
+    } catch (e) {
+        if (event && event.completed) {
+            event.completed();
         }
-    );
+    }
 }
