@@ -8,13 +8,11 @@ function insertPexipMeeting(event) {
     
     const webLink = 'https://' + vmrDomain + '/' + vmrUsername;
     const vcEndpoint = vmrUsername + '@' + vmrDomain;
-    const appLink = 'pexip://' + vmrUsername + '@' + vmrDomain;
     
     // Create HTML formatted content
     const pexipHTML = '<br><br><strong>PEXIP MEETING DETAILS</strong><br><br>' +
         '<strong>Join from web browser:</strong> ' + webLink + '<br><br>' +
         '<strong>Join from VC endpoint:</strong> ' + vcEndpoint + '<br><br>' +
-        '<strong>Join from Pexip App:</strong> ' + appLink + '<br>';
     
     // Insert into appointment body
     Office.context.mailbox.item.body.getAsync(
