@@ -15,11 +15,13 @@
             
             var webLink = 'https://' + vmrDomain + '/' + vmrUsername;
             var vcEndpoint = vmrUsername + '@' + vmrDomain;
+            var appLink = 'pexip://' + vmrUsername + '@' + vmrDomain;
             
             // Create HTML formatted content
             var pexipHTML = '<br><br><strong>PEXIP MEETING DETAILS</strong><br><br>' +
                 '<strong>Join from web browser:</strong> ' + webLink + '<br><br>' +
                 '<strong>Join from VC endpoint:</strong> ' + vcEndpoint + '<br><br>' +
+                '<strong>Join from Pexip App:</strong> ' + appLink + '<br>';
             
             try {
                 // Insert into appointment body
