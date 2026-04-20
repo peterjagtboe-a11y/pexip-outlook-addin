@@ -7,6 +7,7 @@
     <title>Pexip Meeting</title>
     
     <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+    <script src="config.js"></script>
     
     <style>
         * {
@@ -191,10 +192,18 @@
     
     <script>
         let vmrUsername = '';
-        let vmrDomain = 'pexip.vc';
+        let vmrDomain = PexipConfig.vmrDomain;
         
         Office.onReady(function(info) {
             loadSettings();
+            
+            // Pre-fill domain from config
+            document.getElementById('vmrDomain').value = PexipConfig.vmrDomain;
+            
+            // Pre-fill username if configured
+            if (PexipConfig.defaultVmrUsername) {
+                document.getElementById('vmrUsername').value = PexipConfig.defaultVmrUsername;
+            }
             
             document.getElementById('saveSettingsBtn').onclick = saveSettings;
             document.getElementById('insertButton').onclick = insertPexipDetails;
@@ -204,8 +213,8 @@
         function loadSettings() {
             // Use localStorage instead of Office roaming settings
             try {
-                vmrUsername = localStorage.getItem('pexip_vmrUsername') || '';
-                vmrDomain = localStorage.getItem('pexip_vmrDomain') || 'pexip.vc';
+                vmrUsername = localStorage.getItem('pexip_vmrUsername') || PexipConfig.defaultVmrUsername || '';
+                vmrDomain = localStorage.getItem('pexip_vmrDomain') || PexipConfig.vmrDomain;
                 
                 if (vmrUsername) {
                     showMain();
