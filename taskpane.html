@@ -211,9 +211,13 @@
         });
         
         function loadSettings() {
+            // Try to auto-detect username from email
+            var userEmail = Office.context.mailbox.userProfile.emailAddress || '';
+            var autoUsername = userEmail.split('@')[0];
+            
             // Use localStorage instead of Office roaming settings
             try {
-                vmrUsername = localStorage.getItem('pexip_vmrUsername') || PexipConfig.defaultVmrUsername || '';
+                vmrUsername = localStorage.getItem('pexip_vmrUsername') || autoUsername || PexipConfig.defaultVmrUsername || '';
                 vmrDomain = localStorage.getItem('pexip_vmrDomain') || PexipConfig.vmrDomain;
                 
                 if (vmrUsername) {

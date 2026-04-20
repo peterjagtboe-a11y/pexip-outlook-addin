@@ -10,8 +10,12 @@
         Office.initialize = function() {};
 
         function insertPexipMeeting(event) {
-            // Get VMR details from config or localStorage
-            var vmrUsername = PexipConfig.defaultVmrUsername || localStorage.getItem('pexip_vmrUsername') || 'your.vmr';
+            // Try to get user's email address and extract username
+            var userEmail = Office.context.mailbox.userProfile.emailAddress || '';
+            var autoUsername = userEmail.split('@')[0]; // Extract part before @
+            
+            // Use auto-detected username, fallback to config default, then localStorage, then 'your.vmr'
+            var vmrUsername = autoUsername || PexipConfig.defaultVmrUsername || localStorage.getItem('pexip_vmrUsername') || 'your.vmr';
             var vmrDomain = localStorage.getItem('pexip_vmrDomain') || PexipConfig.vmrDomain;
             
             var webLink = 'https://' + vmrDomain + '/' + vmrUsername;

@@ -5,7 +5,9 @@ var PexipConfig = {
     // Default VMR domain (e.g., 'pexip.vc', 'meet.framskak.com', 'customer.infinity.com')
     vmrDomain: 'pexip.vc',
     
-    // Optional: Pre-fill VMR username (leave empty for user to configure)
+    // Optional: Pre-fill VMR username (leave empty to auto-detect from email)
+    // The add-in will automatically use the user's email prefix (e.g., john.doe@company.com → john.doe)
+    // Only set this if you want to override auto-detection
     defaultVmrUsername: '',
     
     // Company branding
